@@ -1,4 +1,5 @@
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class BowlingSpec extends Specification {
 
@@ -7,12 +8,23 @@ class BowlingSpec extends Specification {
             new Bowling().score() == 0
     }
 
-    def "roll once"() {
+    @Unroll
+    "roll #name"() {
         given:
             def bowling = new Bowling()
         when:
-            bowling.roll(1)
+            rollList(bowling, input)
         then:
-            bowling.score() == 1
+            bowling.score() == result
+        where:
+            name             | result | input
+            "once"           | 1      | [1]
+            "twice"          | 3      | [1, 2]
+            "a spare"        | 20     | [6, 4, 5]
+            "a spare & some" | 21     | [3, 7, 5, 1]
+    }
+
+    def rollList(Bowling bowling, List<Integer> list) {
+        list.forEach({ bowling.roll it })
     }
 }
