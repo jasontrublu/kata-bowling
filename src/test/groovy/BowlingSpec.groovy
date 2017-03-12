@@ -3,11 +3,6 @@ import spock.lang.Unroll
 
 class BowlingSpec extends Specification {
 
-    def "nothing"() {
-        expect:
-            new Bowling().score() == 0
-    }
-
     @Unroll
     "roll #name"() {
         given:
@@ -18,6 +13,7 @@ class BowlingSpec extends Specification {
             bowling.score() == result
         where:
             name              | result | input
+            "nothing"         | 0      | []
             "once"            | 1      | [1]
             "twice"           | 3      | [1, 2]
             "a spare"         | 20     | [6, 4, 5]
