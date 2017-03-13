@@ -1,5 +1,5 @@
 class Bowling {
-    var score = 0
+    var score: Int = 0
     var isSpare = false
     var strikeCount = 0
     var isFrame = false
