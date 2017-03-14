@@ -50,7 +50,8 @@ class FrameSpec extends Specification {
                 addRoll(1)
             }
         then:
-            thrown InvalidRollException
+            def e = thrown(InvalidRollException)
+            e.message == "frame is closed"
             frame.isClosed()
     }
 
@@ -59,7 +60,8 @@ class FrameSpec extends Specification {
         when:
             frame.addRoll(input)
         then:
-            thrown InvalidRollException
+            def e = thrown(InvalidRollException)
+            e.message == "roll is out of bounds"
         where:
             name | input
             "-1" | -1
