@@ -42,17 +42,18 @@ class FrameSpec extends Specification {
             frame.getResult() == 3
     }
 
-    def "normal frame allows only 2 rolls"() {
+    @Unroll
+    def "exception when too many rolls, #name"() {
         when:
-            frame.with {
-                addRoll(1)
-                addRoll(2)
-                addRoll(1)
-            }
+            rollList(frame, input)
         then:
             def e = thrown(InvalidRollException)
             e.message == "frame is closed"
             frame.isClosed()
+        where:
+            name           | input
+            "3 for open "  | [1, 2, 1]
+            "4 for spare " | [4, 6, 5, 5]
     }
 
     @Unroll
@@ -85,11 +86,7 @@ class FrameSpec extends Specification {
 
     def "extra roll after spare"() {
         when:
-            frame.with {
-                addRoll(4)
-                addRoll(6)
-                addRoll(5)
-            }
+            rollList(frame, [4, 6, 5])
         then:
             frame.isSpare()
             frame.getResult() == 15
@@ -97,26 +94,8 @@ class FrameSpec extends Specification {
 
     def "spare frame with three rolls is closed"() {
         when:
-            frame.with {
-                addRoll(4)
-                addRoll(6)
-                addRoll(5)
-            }
+            rollList(frame, [4, 6, 5])
         then:
-            frame.isClosed()
-    }
-
-    def "only three rolls in a spare"() {
-        when:
-            frame.with {
-                addRoll(4)
-                addRoll(6)
-                addRoll(5)
-                addRoll(5)
-            }
-        then:
-            def e = thrown(InvalidRollException)
-            e.message == "frame is closed"
             frame.isClosed()
     }
 
@@ -133,5 +112,9 @@ class FrameSpec extends Specification {
             "-3" | -3
             "11" | 11
             "12" | 12
+    }
+
+    def rollList(Frame frame, List<Integer> list) {
+        list.forEach({ frame.addRoll it })
     }
 }

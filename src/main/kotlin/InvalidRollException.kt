@@ -1,1 +1,1 @@
-class InvalidRollException(override val message: String?) : Exception(message)
+class InvalidRollException(override val message: String?) : RuntimeException(message)
