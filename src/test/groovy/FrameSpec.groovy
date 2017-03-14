@@ -39,6 +39,7 @@ class FrameSpec extends Specification {
             }
         then:
             frame.isClosed()
+            frame.getResult() == 3
     }
 
     @Unroll

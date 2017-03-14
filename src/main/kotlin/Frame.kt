@@ -1,11 +1,13 @@
 class Frame {
     private val rolls: MutableList<Int> = mutableListOf()
     val isNew: Boolean
-        get() = this.rolls.size == 0
+        get() = rolls.size == 0
     val isOpen: Boolean
-        get() = this.rolls.size == 1
+        get() = rolls.size == 1
     val isClosed: Boolean
-        get() = this.rolls.size == 2
+        get() = rolls.size == 2
+    val result: Int
+        get() = rolls.sum()
 
     fun addRoll(roll: Int) {
         if (roll < 0 || roll > 10) {
