@@ -95,6 +95,31 @@ class FrameSpec extends Specification {
             frame.getResult() == 15
     }
 
+    def "spare frame with three rolls is closed"() {
+        when:
+            frame.with {
+                addRoll(4)
+                addRoll(6)
+                addRoll(5)
+            }
+        then:
+            frame.isClosed()
+    }
+
+    def "only three rolls in a spare"() {
+        when:
+            frame.with {
+                addRoll(4)
+                addRoll(6)
+                addRoll(5)
+                addRoll(5)
+            }
+        then:
+            def e = thrown(InvalidRollException)
+            e.message == "frame is closed"
+            frame.isClosed()
+    }
+
     @Unroll
     def "Input is invalid (#name)"() {
         when:
