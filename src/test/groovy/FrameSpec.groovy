@@ -27,7 +27,7 @@ class FrameSpec extends Specification {
             frame.addRoll(2)
         then:
             !frame.isNew()
-            !frame.isOpen()
+            frame.isOpen()
             frame.isClosed()
     }
 
@@ -53,6 +53,46 @@ class FrameSpec extends Specification {
             def e = thrown(InvalidRollException)
             e.message == "frame is closed"
             frame.isClosed()
+    }
+
+    @Unroll
+    def "frame of #one&#two is spare"() {
+        when:
+            frame.with {
+                addRoll(one)
+                addRoll(two)
+            }
+        then:
+            frame.isSpare()
+            frame.getResult() == 10
+        where:
+            one | two
+            4   | 6
+            1   | 9
+            3   | 7
+            6   | 4
+    }
+
+    def "spare frame is not open"() {
+        when:
+            frame.with {
+                addRoll(4)
+                addRoll(6)
+            }
+        then:
+            !frame.isOpen()
+    }
+
+    def "extra roll after spare"() {
+        when:
+            frame.with {
+                addRoll(4)
+                addRoll(6)
+                addRoll(5)
+            }
+        then:
+            frame.isSpare()
+            frame.getResult() == 15
     }
 
     @Unroll
