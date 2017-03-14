@@ -10,7 +10,7 @@ class Frame {
         get() = rolls.sum()
 
     fun addRoll(roll: Int) {
-        if (roll < 0 || roll > 10) {
+        if (roll < 0 || roll > 10 || isClosed) {
             throw InvalidRollException("")
         }
         rolls.add(roll)

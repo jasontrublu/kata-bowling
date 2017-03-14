@@ -42,6 +42,18 @@ class FrameSpec extends Specification {
             frame.getResult() == 3
     }
 
+    def "normal frame allows only 2 rolls"() {
+        when:
+            frame.with {
+                addRoll(1)
+                addRoll(2)
+                addRoll(1)
+            }
+        then:
+            thrown InvalidRollException
+            frame.isClosed()
+    }
+
     @Unroll
     def "Input is invalid (#name)"() {
         when:
