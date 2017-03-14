@@ -43,17 +43,20 @@ class FrameSpec extends Specification {
     }
 
     @Unroll
-    def "exception when too many rolls, #name"() {
+    def "InvalidRollException, #name"() {
         when:
             rollList(frame, input)
         then:
             def e = thrown(InvalidRollException)
-            e.message == "frame is closed"
-            frame.isClosed()
+            e.message == message
         where:
-            name           | input
-            "3 for open "  | [1, 2, 1]
-            "4 for spare " | [4, 6, 5, 5]
+            name                  | input        | message
+            ">2 rolls for open "  | [1, 2, 1]    | "frame is closed"
+            ">3 rolls for spare " | [4, 6, 5, 5] | "frame is closed"
+            "invalid: -1"         | [-1]         | "roll is out of bounds"
+            "invalid: -3"         | [-3]         | "roll is out of bounds"
+            "invalid: 11"         | [11]         | "roll is out of bounds"
+            "invalid: 12"         | [12]         | "roll is out of bounds"
     }
 
     @Unroll
@@ -97,21 +100,6 @@ class FrameSpec extends Specification {
             rollList(frame, [4, 6, 5])
         then:
             frame.isClosed()
-    }
-
-    @Unroll
-    def "Input is invalid (#name)"() {
-        when:
-            frame.addRoll(input)
-        then:
-            def e = thrown(InvalidRollException)
-            e.message == "roll is out of bounds"
-        where:
-            name | input
-            "-1" | -1
-            "-3" | -3
-            "11" | 11
-            "12" | 12
     }
 
     def rollList(Frame frame, List<Integer> list) {
