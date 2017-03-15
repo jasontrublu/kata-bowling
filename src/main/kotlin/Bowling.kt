@@ -1,7 +1,8 @@
 class Bowling {
-    private val frames: MutableList<Frame> = mutableListOf()
+    private val frames: MutableList<Frame> = mutableListOf(Frame())
     private var activeFrames: MutableList<Frame> = mutableListOf()
-    private var currentFrame: Frame = Frame()
+    private val currentFrame: Frame
+        get() = frames.last()
 
     fun score(): Int {
         return frames.sumBy { it.result }
@@ -22,11 +23,10 @@ class Bowling {
     }
 
     private fun handleFirstRollOfFrame(value: Int) {
-        frames.add(currentFrame)
         currentFrame.addRoll(value)
         if (currentFrame.isStrike) {
             activeFrames.add(currentFrame)
-            currentFrame = Frame()
+            frames.add(Frame())
         }
     }
 
@@ -35,6 +35,6 @@ class Bowling {
         if (currentFrame.isSpare) {
             activeFrames.add(currentFrame)
         }
-        currentFrame = Frame()
+        frames.add(Frame())
     }
 }
