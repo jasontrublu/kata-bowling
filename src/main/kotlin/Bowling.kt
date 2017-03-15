@@ -1,66 +1,28 @@
 class Bowling {
-    var score: Int = 0
-    var isSpare = false
-    var strikeCount = 0
-    var isFrame = false
-    var frameScore = 0
+    private val frames: MutableList<Frame> = mutableListOf()
+    private var activeFrames: MutableList<Frame> = mutableListOf()
+    private var currentFrame: Frame = Frame()
 
     fun score(): Int {
-        return score
+        return frames.sumBy { it.result }
     }
 
     fun roll(value: Int): Unit {
-        score += value
-        addValueAfterStrike(value)
-        addValueAfterSpare(value)
-        handleFrame(value)
-    }
-
-    private fun handleFrame(value: Int) {
-        if (isFrame) {
-            frameScore += value
-            markSpareIfFrameIsTen()
-            resetFrame()
-            return
-        }
-        startFrame(value)
-        markStrikeIfValueIsTen(value)
-    }
-
-    private fun resetFrame() {
-        isFrame = false
-        frameScore = 0
-    }
-
-    private fun startFrame(value: Int) {
-        isFrame = true
-        frameScore = value
-    }
-
-    private fun markStrikeIfValueIsTen(value: Int) {
-        if (value == 10) {
-            strikeCount = 2
-            resetFrame()
-        }
-    }
-
-    private fun markSpareIfFrameIsTen() {
-        if (frameScore == 10) {
-            isSpare = true
-        }
-    }
-
-    private fun addValueAfterStrike(value: Int) {
-        if (strikeCount > 0) {
-            score += value
-            strikeCount--
-        }
-    }
-
-    private fun addValueAfterSpare(value: Int) {
-        if (isSpare) {
-            score += value
-            isSpare = false
+        activeFrames.forEach { it.addRoll(value) }
+        activeFrames.removeAll { it.isClosed }
+        if (currentFrame.isNew) {
+            frames.add(currentFrame)
+            currentFrame.addRoll(value)
+            if (currentFrame.isStrike) {
+                activeFrames.add(currentFrame)
+                currentFrame = Frame()
+            }
+        } else {
+            currentFrame.addRoll(value)
+            if (currentFrame.isSpare) {
+                activeFrames.add(currentFrame)
+            }
+            currentFrame = Frame()
         }
     }
 }
