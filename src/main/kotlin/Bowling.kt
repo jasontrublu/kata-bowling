@@ -3,6 +3,8 @@ class Bowling {
     private var activeFrames: MutableList<Frame> = mutableListOf()
     private val currentFrame: Frame
         get() = frames.last()
+    private val fullGame: Boolean
+        get() = frames.count() > 10
 
     fun score(): Int {
         return frames.sumBy { it.result }
@@ -10,6 +12,9 @@ class Bowling {
 
     fun roll(value: Int): Unit {
         handleStillActiveFrames(value)
+        if (fullGame) {
+            return
+        }
         if (currentFrame.isNew) {
             handleFirstRollOfFrame(value)
         } else {
