@@ -5,9 +5,12 @@ class Frame {
     val isOpen: Boolean
         get() = rolls.size >= 1 && result < 10
     val isClosed: Boolean
-        get() = (isSpare && rolls.size == 3)  || (isOpen && rolls.size == 2)
+        get() = ((isSpare || isStrike) && rolls.size == 3)
+                || (isOpen && rolls.size == 2)
     val isSpare: Boolean
         get() = rolls.size >= 2 && rolls[0]+rolls[1] == 10
+    val isStrike: Boolean
+        get() = rolls.size >= 1 && rolls[0] == 10
     val result: Int
         get() = rolls.sum()
 

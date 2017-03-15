@@ -2,7 +2,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class FrameSpec extends Specification {
-    def frame
+    Frame frame
 
     void setup() {
         frame = new Frame()
@@ -50,13 +50,14 @@ class FrameSpec extends Specification {
             def e = thrown(InvalidRollException)
             e.message == message
         where:
-            name                  | input        | message
-            ">2 rolls for open "  | [1, 2, 1]    | "frame is closed"
-            ">3 rolls for spare " | [4, 6, 5, 5] | "frame is closed"
-            "invalid: -1"         | [-1]         | "roll is out of bounds"
-            "invalid: -3"         | [-3]         | "roll is out of bounds"
-            "invalid: 11"         | [11]         | "roll is out of bounds"
-            "invalid: 12"         | [12]         | "roll is out of bounds"
+            name                   | input         | message
+            ">2 rolls for open "   | [1, 2, 1]     | "frame is closed"
+            ">3 rolls for spare "  | [4, 6, 5, 5]  | "frame is closed"
+            ">3 rolls for strike " | [10, 6, 5, 5] | "frame is closed"
+            "invalid: -1"          | [-1]          | "roll is out of bounds"
+            "invalid: -3"          | [-3]          | "roll is out of bounds"
+            "invalid: 11"          | [11]          | "roll is out of bounds"
+            "invalid: 12"          | [12]          | "roll is out of bounds"
     }
 
     @Unroll
@@ -100,6 +101,30 @@ class FrameSpec extends Specification {
             rollList(frame, [4, 6, 5])
         then:
             frame.isClosed()
+    }
+
+    def "A roll of one is a strike"() {
+        when:
+            frame.addRoll(10)
+        then:
+            frame.isStrike()
+            frame.getResult() == 10
+    }
+
+    def "a strike frame is not open"() {
+        when:
+            frame.with {
+                addRoll(10)
+            }
+        then:
+            !frame.isOpen()
+    }
+
+    def "two extra rolls after a strike"() {
+        when:
+            rollList(frame, [10, 5, 6])
+        then:
+            frame.getResult() == 21
     }
 
     def rollList(Frame frame, List<Integer> list) {
