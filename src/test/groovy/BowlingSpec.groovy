@@ -4,7 +4,7 @@ import spock.lang.Unroll
 class BowlingSpec extends Specification {
 
     @Unroll
-    "roll #name"() {
+    "roll #name = #score"() {
         given:
             def bowling = new Bowling()
         when:
@@ -22,11 +22,13 @@ class BowlingSpec extends Specification {
             "two strikes & some"             | 52    | [10, 10, 4, 5]
             "perfect game"                   | 300   | [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
             "perfect game, ignore 13th roll" | 300   | [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+            "normal game, 20 rolls"          | 40    | [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
             "normal game, ignore 21th roll"  | 40    | [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
             "full game, three strikes"       | 86    | [2, 2, 10, 2, 2, 1, 9, 10, 2, 2, 10, 2, 2, 2, 2, 2, 2]
     }
 
-    def "illegal roll #name"() {
+    @Unroll
+    def "illegal roll #name throws InvalidRollException"() {
         given:
             def bowling = new Bowling()
         when:
