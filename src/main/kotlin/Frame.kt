@@ -14,12 +14,19 @@ class Frame {
     val result: Int
         get() = rolls.sum()
 
+    private fun isIllegalRoll(roll: Int): Boolean {
+        return rolls.size == 1 && !isStrike && rolls[0] + roll > 10
+    }
+
     fun addRoll(roll: Int) {
         if (roll < 0 || roll > 10) {
             throw InvalidRollException("roll is out of bounds")
         }
         if (isClosed) {
             throw InvalidRollException("frame is closed")
+        }
+        if (isIllegalRoll(roll)) {
+            throw InvalidRollException("sum of regular rolls ")
         }
         rolls.add(roll)
     }

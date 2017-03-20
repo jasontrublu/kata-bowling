@@ -23,6 +23,19 @@ class BowlingSpec extends Specification {
             "perfect game"                   | 300   | [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
             "perfect game, ignore 13th roll" | 300   | [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
             "normal game, ignore 21th roll"  | 40    | [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+            "full game, three strikes"       | 86    | [2, 2, 10, 2, 2, 1, 9, 10, 2, 2, 10, 2, 2, 2, 2, 2, 2]
+    }
+
+    def "illegal roll #name"() {
+        given:
+            def bowling = new Bowling()
+        when:
+            rollList(bowling, rolls)
+        then:
+            thrown InvalidRollException
+        where:
+            name             | rolls
+            "6+6 in a frame" | [6, 6]
     }
 
     def rollList(Bowling bowling, List<Integer> list) {
